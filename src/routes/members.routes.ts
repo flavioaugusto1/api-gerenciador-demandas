@@ -17,5 +17,10 @@ membersRoutes.post(
 membersRoutes.delete(
     '/remove/:id',
     verifyAuthorization(['admin']),
-    membersController.removeMemberOnTeam,
+    membersController.removeMemberOfTeam,
+)
+membersRoutes.delete(
+    '/delete/:id',
+    verifyAuthorization(['admin']),
+    membersController.deleteMember,
 )

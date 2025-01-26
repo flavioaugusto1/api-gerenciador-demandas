@@ -25,3 +25,9 @@ teamsRoutes.put(
     verifyAuthorization(['admin']),
     teamsController.updateTeamById,
 )
+
+teamsRoutes.delete(
+    '/:id',
+    verifyAuthorization(['admin']),
+    teamsController.deleteTeam,
+)

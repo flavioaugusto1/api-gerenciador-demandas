@@ -89,7 +89,7 @@ export class MembersController {
         response.json(addMember)
     }
 
-    async removeMemberOnTeam(request: Request, response: Response) {
+    async removeMemberOfTeam(request: Request, response: Response) {
         const requestBodySchema = z.object({
             userId: z.string().uuid(),
             teamId: z.string().uuid(),
@@ -123,6 +123,39 @@ export class MembersController {
                     teamId,
                     userId,
                 },
+            },
+        })
+
+        response.status(204).json()
+    }
+
+    async deleteMember(request: Request, response: Response) {
+        const requestParamSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = requestParamSchema.parse(request.params)
+
+        const member = await prisma.user.findFirst({
+            where: {
+                id,
+            },
+        })
+
+        if (!member) {
+            throw new AppError('Não foi possível localizar esse membro', 404)
+        }
+
+        if (member.role === 'admin') {
+            throw new AppError(
+                'Não é possível excluir outro administrador',
+                409,
+            )
+        }
+
+        await prisma.user.delete({
+            where: {
+                id,
             },
         })
 

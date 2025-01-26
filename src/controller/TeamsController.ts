@@ -82,4 +82,33 @@ export class TeamsController {
             team,
         })
     }
+
+    async deleteTeam(request: Request, response: Response) {
+        const requestParamSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = requestParamSchema.parse(request.params)
+
+        const team = await prisma.team.findFirst({
+            where: {
+                id,
+            },
+        })
+
+        if (!team) {
+            throw new AppError(
+                'Não foi possível localizar a equipe informada.',
+                404,
+            )
+        }
+
+        await prisma.team.delete({
+            where: {
+                id,
+            },
+        })
+
+        response.status(204).json()
+    }
 }
